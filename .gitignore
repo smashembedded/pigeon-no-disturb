@@ -1,0 +1,42 @@
+# PlatformIO
+.pio/
+.piolibdeps/
+.clangd/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Build artifacts
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+
+# Firmware binaries
+*.bin
+*.elf
+*.map
