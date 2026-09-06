@@ -8,6 +8,8 @@ constexpr uint8_t ECHO = 18;
 
 namespace Ultrasonic
 {
+constexpr uint8_t FILTER_SAMPLES = 5;
+
 void begin()
 {
     pinMode(Pins::TRIG, OUTPUT);
@@ -16,7 +18,7 @@ void begin()
     digitalWrite(Pins::TRIG, LOW);
 }
 
-float readDistanceCm()
+float readRawDistanceCm()
 {
     digitalWrite(Pins::TRIG, LOW);
     delayMicroseconds(2);
@@ -29,6 +31,19 @@ float readDistanceCm()
     const unsigned long duration = pulseIn(Pins::ECHO, HIGH);
 
     return duration / 58.0f;
+}
+
+float readDistanceCm()
+{
+    float sum = 0.0f;
+
+    for (uint8_t i = 0; i < FILTER_SAMPLES; ++i)
+    {
+        sum += readRawDistanceCm();
+        delay(10);
+    }
+
+    return sum / FILTER_SAMPLES;
 }
 }
 
