@@ -27,7 +27,7 @@ void loop()
     {
         Serial.print("Distance: ");
         Serial.print(distanceCm);
-        Serial.print(" cm");
+        Serial.println(" cm");
 
         Detection::update(distanceCm);
     }

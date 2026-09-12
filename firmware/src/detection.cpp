@@ -7,10 +7,12 @@ namespace
 enum class State
 {
     CLEAR,
+    CONFIRMING,
     PRESENT
 };
 
 State state = State::CLEAR;
+uint8_t confirmationSamples = 0;
 
 bool isDetected(float distanceCm)
 {
@@ -24,6 +26,7 @@ namespace Detection
 void begin()
 {
     state = State::CLEAR;
+    confirmationSamples = 0;
 }
 
 void update(float distanceCm)
@@ -35,8 +38,28 @@ void update(float distanceCm)
     case State::CLEAR:
         if (detected)
         {
-            state = State::PRESENT;
-            Serial.println("Event: PRESENCE_DETECTED");
+            confirmationSamples = 1;
+            state = State::CONFIRMING;
+        }
+        break;
+
+    case State::CONFIRMING:
+        if (detected)
+        {
+            ++confirmationSamples;
+
+            if (confirmationSamples >= CONFIRMATION_SAMPLES)
+            {
+                state = State::PRESENT;
+                confirmationSamples = 0;
+
+                Serial.println("Event: PRESENCE_DETECTED");
+            }
+        }
+        else
+        {
+            confirmationSamples = 0;
+            state = State::CLEAR;
         }
         break;
 
@@ -44,6 +67,7 @@ void update(float distanceCm)
         if (!detected)
         {
             state = State::CLEAR;
+
             Serial.println("Event: DEPARTED");
         }
         break;
