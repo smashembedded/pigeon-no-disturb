@@ -3,6 +3,6 @@
 namespace Buzzer
 {
 void begin();
-void on();
+void playDeterrentPattern();
 void off();
 }
