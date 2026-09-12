@@ -2,6 +2,8 @@
 
 #include "ultrasonic.h"
 #include "detection.h"
+#include "buzzer.h"
+
 
 void setup()
 {
@@ -9,6 +11,8 @@ void setup()
 
     Ultrasonic::begin();
     Detection::begin();
+    Buzzer::begin();
+
 
     Serial.println();
     Serial.println("Pigeon No Disturb");
@@ -17,6 +21,7 @@ void setup()
     Serial.print("Detection threshold: ");
     Serial.print(Detection::DISTANCE_THRESHOLD_CM);
     Serial.println(" cm");
+
 }
 
 void loop()
@@ -30,6 +35,10 @@ void loop()
         Serial.println(" cm");
 
         Detection::update(distanceCm);
+
+        Buzzer::on();
+        delay(2000);
+        Buzzer::off();
     }
 
     delay(400);
