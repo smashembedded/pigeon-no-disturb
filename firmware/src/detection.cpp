@@ -36,15 +36,16 @@ void begin()
     presenceStartTime = 0;
 }
 
-void update(float distanceCm)
+Event update(float distanceCm)
 {
     // Invalid measurements must not change the detection state.
     if (!isValid(distanceCm))
     {
-        return;
+        return Event::NONE;
     }
 
     const bool detected = isDetected(distanceCm);
+    Event event = Event::NONE;
 
     switch (state)
     {
@@ -66,6 +67,7 @@ void update(float distanceCm)
                 state = State::PRESENT;
                 confirmationSamples = 0;
                 presenceStartTime = millis();
+                event = Event::PRESENCE_DETECTED;
 
                 Serial.println("Event: PRESENCE_DETECTED");
             }
@@ -84,6 +86,7 @@ void update(float distanceCm)
                 millis() - presenceStartTime;
 
             state = State::CLEAR;
+            event = Event::DEPARTED;
 
             Serial.print("Event: DEPARTED");
             Serial.print(" | Presence duration: ");
@@ -92,5 +95,7 @@ void update(float distanceCm)
         }
         break;
     }
+
+    return event;
 }
 }
