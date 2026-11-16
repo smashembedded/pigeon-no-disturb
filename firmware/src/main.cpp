@@ -4,11 +4,6 @@
 #include "detection.h"
 #include "buzzer.h"
 
-namespace
-{
-bool wasDetected = false;
-}
-
 void setup()
 {
     Serial.begin(115200);
@@ -36,19 +31,14 @@ void loop()
         Serial.print(distanceCm);
         Serial.println(" cm");
 
-        Detection::update(distanceCm);
+        const Detection::Event event = Detection::update(distanceCm);
 
-        const bool detected =
-            distanceCm <= Detection::DISTANCE_THRESHOLD_CM;
-
-        if (detected && !wasDetected)
+        if (event == Detection::Event::PRESENCE_DETECTED)
         {
             Serial.println("Deterrent activated");
 
             Buzzer::playDeterrentPattern();
         }
-
-        wasDetected = detected;
     }
 
     delay(400);
