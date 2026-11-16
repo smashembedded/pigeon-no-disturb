@@ -2,6 +2,12 @@
 
 #include "ultrasonic.h"
 #include "detection.h"
+#include "buzzer.h"
+
+namespace
+{
+bool wasDetected = false;
+}
 
 void setup()
 {
@@ -9,6 +15,7 @@ void setup()
 
     Ultrasonic::begin();
     Detection::begin();
+    Buzzer::begin();
 
     Serial.println();
     Serial.println("Pigeon No Disturb");
@@ -30,6 +37,18 @@ void loop()
         Serial.println(" cm");
 
         Detection::update(distanceCm);
+
+        const bool detected =
+            distanceCm <= Detection::DISTANCE_THRESHOLD_CM;
+
+        if (detected && !wasDetected)
+        {
+            Serial.println("Deterrent activated");
+
+            Buzzer::playDeterrentPattern();
+        }
+
+        wasDetected = detected;
     }
 
     delay(400);
